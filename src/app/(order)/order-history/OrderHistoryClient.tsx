@@ -1,44 +1,22 @@
 'use client'
-import React, { useEffect } from 'react'
+import React from 'react'
 import styles from './OrderHistory.module.scss';
-import useFetchCollection from '@/hooks/useFetchCollection';
-import { useDispatch, useSelector } from 'react-redux';
-import { STORE_ORDERS, selectOrderHistory } from '@/redux/slice/orderSlice';
-import { selectUserID } from '@/redux/slice/authSlice';
 import Heading from '@/components/heading/Heading';
 import Loader from '@/components/loader/Loader';
 import { formatTime } from '@/utils/dayjs';
 import priceFormat from '@/utils/priceFormat';
-import { useRouter } from 'next/navigation';
+import { useOrderHistory } from './useOrderHistory';
 
 const OrderHistoryClient = () => {
-    // ====================================================================
-    // FIXME: 레이아웃 로직에서는 해당 기능 로직을 알 필요가 없음.
-    const { data, isLoading } = useFetchCollection('orders');
-    const dispatch = useDispatch();
-    const router = useRouter();
+    const { orders, isEmpty, isLoading, handleClickToOrder } = useOrderHistory({})
 
-    useEffect(() => {
-        dispatch(STORE_ORDERS(data));
-    }, [dispatch, data]);
-
-    const orders = useSelector(selectOrderHistory);
-    const userID = useSelector(selectUserID);
-
-    const filteredOrders = orders.filter((order) => order.userID === userID);
-
-    const handleClick = (id: string) => {
-        router.push(`/order-details/${id}`)
-    }
-    // ====================================================================
-    
     return (
         <section className={styles.order}>
             <Heading title="주문 목록" />
             {isLoading && <Loader />}
             <div className={styles.table}>
                 {
-                    filteredOrders.length === 0 ? (
+                    isEmpty ? (
                         <p>주문 목록이 없습니다.</p>
                     ) :
                         (
@@ -53,7 +31,7 @@ const OrderHistoryClient = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {filteredOrders.map((order, index) => {
+                                    {orders.map((order, index) => {
                                         const {
                                             id,
                                             orderDate,
@@ -64,7 +42,7 @@ const OrderHistoryClient = () => {
 
                                         return (
                                             <tr key={id}
-                                                onClick={() => handleClick(id)}
+                                                onClick={() => handleClickToOrder(id)}
                                             >
                                                 <td>{index + 1}</td>
                                                 <td>

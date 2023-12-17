@@ -21,6 +21,8 @@ interface UseOrderHistoryReturn {
     orders: IOrder[]
     /** 주문이 비었는지 */
     isEmpty: boolean
+    /** 로딩 상태인지 */
+    isLoading: boolean
     /** 주문 클릭 시 이벤트 */
     handleClickToOrder: (id: string) => void
 }
@@ -48,6 +50,7 @@ export const useOrderHistory: UseOrderHistory = (props)  => {
     return {
         orders: filteredOrders,
         isEmpty: filteredOrders.length === 0,
+        isLoading,
         handleClickToOrder
     }
 }
