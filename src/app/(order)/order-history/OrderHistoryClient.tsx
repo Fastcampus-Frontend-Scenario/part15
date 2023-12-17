@@ -12,7 +12,8 @@ import priceFormat from '@/utils/priceFormat';
 import { useRouter } from 'next/navigation';
 
 const OrderHistoryClient = () => {
-
+    // ====================================================================
+    // FIXME: 레이아웃 로직에서는 해당 기능 로직을 알 필요가 없음.
     const { data, isLoading } = useFetchCollection('orders');
     const dispatch = useDispatch();
     const router = useRouter();
@@ -26,11 +27,11 @@ const OrderHistoryClient = () => {
 
     const filteredOrders = orders.filter((order) => order.userID === userID);
 
-
     const handleClick = (id: string) => {
         router.push(`/order-details/${id}`)
     }
-
+    // ====================================================================
+    
     return (
         <section className={styles.order}>
             <Heading title="주문 목록" />
